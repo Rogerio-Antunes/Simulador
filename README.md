@@ -1,0 +1,1 @@
+# Avaliador Nua Propriedade
