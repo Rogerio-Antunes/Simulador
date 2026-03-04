@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simulador Investimento Usufruto</title>
+
+<style>
+
+body{
+font-family:Arial;
+max-width:750px;
+margin:auto;
+padding:40px;
+background:#f5f5f5;
+}
+
+h2{
+margin-top:0;
+}
+
+input{
+width:100%;
+padding:8px;
+margin:6px 0;
+}
+
+button{
+padding:12px;
+background:#2c7be5;
+color:white;
+border:none;
+width:100%;
+font-size:16px;
+cursor:pointer;
+}
+
+.result{
+margin-top:25px;
+padding:20px;
+background:white;
+border-radius:6px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Simulador Investimento com Usufruto Vitalício</h2>
+
+<label>Idade atual</label>
+<input id="idade" type="number">
+
+<label>Esperança de vida</label>
+<input id="vida" type="number">
+
+<label>Valor de mercado do imóvel (€)</label>
+<input id="valor" type="number">
+
+<label>Valorização anual (%)</label>
+<input id="valorizacao" type="number">
+
+<label>Yield / IRR pretendida (%)</label>
+<input id="yield" type="number">
+
+<label>Custo de escritura (€)</label>
+<input id="escritura" type="number" value="1500">
+
+<button onclick="calcular()">Calcular</button>
+
+<div class="result" id="resultado"></div>
+
+<script>
+
+function calcularIMT(valor){
+
+let imt = 0
+
+if(valor <= 97064){
+imt = valor * 0.01
+}
+
+else if(valor <= 132774){
+imt = valor * 0.02 - 970.64
+}
+
+else if(valor <= 181034){
+imt = valor * 0.05 - 3898.24
+}
+
+else if(valor <= 301688){
+imt = valor * 0.07 - 7521.92
+}
+
+else if(valor <= 603289){
+imt = valor * 0.08 - 10538.80
+}
+
+else{
+imt = valor * 0.06
+}
+
+return imt
+
+}
+
+function calcular(){
+
+let idade = parseFloat(document.getElementById("idade").value)
+let vida = parseFloat(document.getElementById("vida").value)
+let valor = parseFloat(document.getElementById("valor").value)
+let valorizacao = parseFloat(document.getElementById("valorizacao").value)/100
+let yield = parseFloat(document.getElementById("yield").value)/100
+let escritura = parseFloat(document.getElementById("escritura").value)
+
+let anos = vida - idade
+
+let valorFuturo = valor*Math.pow((1+valorizacao),anos)
+
+let precoCompra = valorFuturo/Math.pow((1+yield),anos)
+
+let valorUsufruto = valor-precoCompra
+
+let imt = calcularIMT(precoCompra)
+
+let impostoSelo = precoCompra * 0.008
+
+let custoTotal = precoCompra + imt + impostoSelo + escritura
+
+document.getElementById("resultado").innerHTML =
+
+"<b>Anos esperados de usufruto:</b> "+anos+" anos<br><br>"+
+
+"<b>Valor futuro estimado do imóvel:</b> €"+Math.round(valorFuturo)+"<br><br>"+
+
+"<b>Preço máximo de compra (nuda propriedade):</b> €"+Math.round(precoCompra)+"<br><br>"+
+
+"<b>Valor económico do usufruto:</b> €"+Math.round(valorUsufruto)+"<br><br>"+
+
+"<hr>"+
+
+"<b>IMT estimado:</b> €"+Math.round(imt)+"<br><br>"+
+
+"<b>Imposto de selo (0.8%):</b> €"+Math.round(impostoSelo)+"<br><br>"+
+
+"<b>Custo escritura:</b> €"+Math.round(escritura)+"<br><br>"+
+
+"<b>Investimento total:</b> €"+Math.round(custoTotal)
+
+}
+
+</script>
+
+</body>
+
+</html>
